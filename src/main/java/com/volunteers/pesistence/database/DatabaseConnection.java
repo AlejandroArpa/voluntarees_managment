@@ -1,4 +1,4 @@
-package java.com.voluntarees.pesistence.database;
+package com.volunteers.pesistence.database;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -11,7 +11,7 @@ public class DatabaseConnection {
 
     private DatabaseConnection(){}
 
-    public static Connection getConnetction() throws SQLException{
+    public static Connection getConnection() throws SQLException{
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 }

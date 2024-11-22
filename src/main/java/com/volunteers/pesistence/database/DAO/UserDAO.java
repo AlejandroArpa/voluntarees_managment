@@ -1,15 +1,15 @@
-package java.com.voluntarees.pesistence.database.DAO;
+package com.volunteers.pesistence.database.DAO;
 
-import java.com.voluntarees.entities.User;
-import java.com.voluntarees.pesistence.database.DatabaseConnection;
+import com.volunteers.entities.User;
+import com.volunteers.pesistence.database.DatabaseConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class UserDAO {
-    public void addUser(User objUser){
+    public static void addUser(User objUser){
         String sql= "INSERT INTO users (name, email, password, role) VALUES(?, ?, ?, ?);";
         try(
-            Connection conn = DatabaseConnection.getConnetction();
+            Connection conn = DatabaseConnection.getConnection();
             PreparedStatement statement = conn.prepareStatement(sql)
         ){
             statement.setString(1, objUser.getName());

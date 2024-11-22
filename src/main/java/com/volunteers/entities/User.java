@@ -1,4 +1,4 @@
-package java.com.voluntarees.entities;
+package com.volunteers.entities;
 
 
 
