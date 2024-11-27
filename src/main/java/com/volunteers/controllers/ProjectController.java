@@ -1,20 +1,16 @@
-package com.volunteers.services;
+package com.volunteers.controllers;
 
 import com.volunteers.entities.Project;
 import com.volunteers.entities.User;
 import com.volunteers.pesistence.database.DAO.ProjectDAO;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 
 import java.sql.Date;
-import java.util.List;
-import java.util.Scanner;
 
-public class ProjectService {
+public class ProjectController {
 
     public void createProject(User user, Scanner scanner) {
         if (!user.getRole().name().equals("PUBLICANTE")) {
@@ -41,24 +37,33 @@ public class ProjectService {
         ProjectDAO.addProject(project);
     }
 
-    public void listAllProjects() {
-        List<Project> projects = ProjectDAO.getAllProjects();
-        if (projects.isEmpty()) {
-            System.out.println("No hay proyectos disponibles.");
-        } else {
-            projects.forEach(System.out::println);
+    public void listProjectsByUser(User user) {
+        var projects = ProjectDAO.getProjectsByUserId(user.getId());
+        for (Project project : projects) {
+            System.out.println("ID: " + project.getId());
+            System.out.println("Título: " + project.getTitle());
+            System.out.println("Descripción: " + project.getDescription());
+            System.out.println("Fechas: " + project.getStartDate() + " - " + project.getEndDate());
+            System.out.println("--------------------------");
         }
     }
 
-    public void listUserProjects(User user) {
-        if (!user.getRole().name().equals("PUBLICANTE")) {
-            System.out.println("Solo los Publicantes pueden listar sus proyectos.");
-            return;
+    public void listAvailableProjects() {
+        var projects = ProjectDAO.getAllProjects();
+        for (Project project : projects) {
+            System.out.println("ID: " + project.getId());
+            System.out.println("Título: " + project.getTitle());
+            System.out.println("Descripción: " + project.getDescription());
+            System.out.println("Fechas: " + project.getStartDate() + " - " + project.getEndDate());
+            System.out.println("--------------------------");
         }
+    }
 
-        List<Project> projects = ProjectDAO.getProjectsByUserId(user.getId());
+    public void listProjects() {
+
+        List<Project> projects = ProjectDAO.getAllProjects();
         if (projects.isEmpty()) {
-            System.out.println("No has creado ningún proyecto.");
+            System.out.println("No hay ningún proyecto.");
         } else {
             projects.forEach(System.out::println);
         }

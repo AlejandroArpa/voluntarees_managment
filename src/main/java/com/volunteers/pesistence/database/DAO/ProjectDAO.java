@@ -1,6 +1,8 @@
 package com.volunteers.pesistence.database.DAO;
 
 import com.volunteers.entities.Project;
+import com.volunteers.entities.Role;
+import com.volunteers.entities.User;
 import com.volunteers.pesistence.database.DatabaseConnection;
 
 import java.sql.*;
@@ -53,6 +55,65 @@ public class ProjectDAO {
         return projects;
     }
 
+    public static Project getProjectById(int projectId) {
+        String query = "SELECT * FROM projects WHERE id = ?";
+        Project project = null;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, projectId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    project = new Project(
+                            rs.getInt("id"),
+                            rs.getString("title"),
+                            rs.getString("description"),
+                            rs.getDate("start_date"),
+                            rs.getDate("end_date"),
+                            rs.getInt("created_by")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener el proyecto por ID: " + e.getMessage());
+        }
+        return project;
+    }
+
+    public static List<User> getUsersByProjectId(int projectId) {
+        List<User> users = new ArrayList<>();
+        String query = """
+                SELECT u.id, u.name, u.email, u.role
+                FROM users u
+                JOIN inscriptions i ON u.id = i.user_id
+                WHERE i.project_id = ?;
+                """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, projectId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Role role = Role.valueOf(rs.getString("role").toUpperCase());
+                    User user = new User(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getString("email"),
+                            role
+                    );
+                    users.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener usuarios por proyecto: " + e.getMessage());
+        }
+        return users;
+    }
+
     public static List<Project> getProjectsByUserId(int userId) {
         List<Project> projects = new ArrayList<>();
         String query = "SELECT * FROM projects WHERE created_by = ?";
@@ -76,8 +137,9 @@ public class ProjectDAO {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Error al obtener proyectos del usuario: " + e.getMessage());
+            System.out.println("Error al obtener proyectos por usuario: " + e.getMessage());
         }
         return projects;
     }
+
 }

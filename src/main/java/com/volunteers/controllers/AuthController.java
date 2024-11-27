@@ -1,4 +1,4 @@
-package com.volunteers.services;
+package com.volunteers.controllers;
 
 import com.volunteers.entities.Role;
 import com.volunteers.entities.User;
@@ -9,7 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Scanner;
 
-public class AuthService {
+public class AuthController {
 
 
     public void registerUser(Scanner scanner) {
